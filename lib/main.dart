@@ -3,7 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'firebase_options.dart';
 
-const String URL_OF_CHAT = '/flutter_chat_demo_2/chat_room_list/pat_mat';
+const String CHAT_ROOM_URL = '/flutter_chat_demo_2/chat_room_list/pat_mat';
+const String USER = "test user";
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,10 +13,6 @@ Future<void> main() async {
   );
   runApp(const MyApp());
 }
-
-// void main() {
-//   runApp(const MyApp());
-// }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -45,9 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(title: const Text("chat")),
       body: StreamBuilder(
-        stream: _firestore
-            .collection(URL_OF_CHAT) //DB경로
-            .snapshots(),
+        stream: _firestore.collection(CHAT_ROOM_URL).snapshots(),
         builder: buildChatList,
       ),
       bottomNavigationBar: Row(children: [
@@ -65,9 +60,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> sendMessage() async {
+    String temp = txtcontrollor.text;
     await _firestore
-        .collection(URL_OF_CHAT)
-        .add({'content': 'nonono', 'sender': 'D'});
+        .collection(CHAT_ROOM_URL)
+        .add({'content': temp, 'sender': USER});
   }
 
   Widget buildChatList(context, AsyncSnapshot<QuerySnapshot> snapshot) {
