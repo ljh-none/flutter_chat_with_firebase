@@ -42,7 +42,10 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(title: const Text("chat")),
       body: StreamBuilder(
-        stream: _firestore.collection(CHAT_ROOM_URL).snapshots(),
+        stream: _firestore
+            .collection(CHAT_ROOM_URL)
+            .orderBy('timestamp', descending: true)
+            .snapshots(),
         builder: buildChatList,
       ),
       bottomNavigationBar: Row(children: [
@@ -60,10 +63,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> sendMessage() async {
+    Timestamp timestamp = Timestamp.now();
     String temp = txtcontrollor.text;
     await _firestore
         .collection(CHAT_ROOM_URL)
-        .add({'content': temp, 'sender': USER});
+        .add({'content': temp, 'sender': USER, 'timestamp': timestamp});
   }
 
   Widget buildChatList(context, AsyncSnapshot<QuerySnapshot> snapshot) {
